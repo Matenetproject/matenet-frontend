@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Nfc, AlertCircle, CheckCircle } from 'lucide-react';
 
+import QRCodeReader from './pages/QRCodeReader';
+
 export default function App() {
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
@@ -107,6 +109,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+      <QRCodeReader />
       <div className="max-w-md mx-auto mt-8">
         <div className="bg-white rounded-2xl shadow-xl p-6">
           <div className="flex items-center justify-center mb-6">
