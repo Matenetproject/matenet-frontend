@@ -8,6 +8,7 @@ export default function App() {
 
   return (
     <HashRouter>
+      <appkit-button />
       <Routes>
         <Route
           path="/scannfc"
