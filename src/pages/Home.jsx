@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 function Home() {
   return (
     <div>
+      <Link to="/register">
+        Register
+      </Link>
       <Link to="/scannfc">
         Scan NFC
       </Link>
