@@ -6,6 +6,9 @@ function Home() {
       <Link to="/register">
         Register
       </Link>
+      <Link to="/profile">
+        Profile
+      </Link>
       <Link to="/scannfc">
         Scan NFC
       </Link>
