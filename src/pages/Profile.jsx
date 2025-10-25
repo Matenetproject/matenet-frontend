@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   Box,
   Avatar,
@@ -25,6 +25,45 @@ import {
 export default function Profile() {
   const [pins] = useState(0);
   const [nearby] = useState(4);
+  const [profileData, setProfileData] = useState(null);
+
+  useEffect(() => {
+    getUserProfile();
+  }, [])
+  
+  async function getUserProfile() {
+    try {
+      // Get token from parameter or localStorage
+      const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
+      
+      if (!authToken) {
+        console.error('Authentication token not found. Please log in.');
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle specific status codes
+        if (response.status === 404) {
+          throw new Error('User not found');
+        }
+        throw new Error(data.error || data.message || 'Failed to fetch user profile');
+      }
+
+      console.log(data.user);
+      setProfileData(data.user);
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#e8f4f8' }}>
@@ -47,7 +86,7 @@ export default function Profile() {
           </Typography>
         </Box>
         <Typography variant="h6" fontWeight="500">
-          {pins} P
+          {profileData?.points} P
         </Typography>
       </Box>
 
@@ -75,7 +114,7 @@ export default function Profile() {
                   border: '3px solid #fff',
                   boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
                 }}
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400"
+                src={profileData?.profilePictureUrl}
                 alt="Profile"
               />
               <Box sx={{ flex: 1 }}>
