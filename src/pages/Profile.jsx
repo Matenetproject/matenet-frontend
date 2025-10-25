@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Avatar,
@@ -23,6 +24,8 @@ import {
 } from '@mui/icons-material';
 
 export default function Profile() {
+  const navigate = useNavigate();
+
   const [pins] = useState(0);
   const [nearby] = useState(4);
   const [profileData, setProfileData] = useState(null);
@@ -166,6 +169,7 @@ export default function Profile() {
             }}
           />
           <Button
+            onClick={() => navigate("/addpin")}
             variant="contained"
             size="large"
             sx={{
