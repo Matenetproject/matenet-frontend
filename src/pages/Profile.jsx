@@ -119,13 +119,13 @@ export default function Profile() {
               />
               <Box sx={{ flex: 1 }}>
                 <Typography variant="h6" fontWeight="500" gutterBottom>
-                  @eterea
+                  @{profileData.username}
                 </Typography>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
-                  Argentina Demar
+                  {profileData.fullName}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  miemail@gmail.com
+                  {profileData.email}
                 </Typography>
               </Box>
             </Box>
@@ -135,7 +135,7 @@ export default function Profile() {
                 Bio
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                Soy Lettering Artist y Product Designer, amo el surf y la buena música.
+                {profileData.bio}
               </Typography>
             </Box>
           </CardContent>

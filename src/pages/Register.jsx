@@ -66,14 +66,24 @@ export default function Register() {
   const handleContinue = async () => {
     if (step === 1) {
       try {
+        const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
+        
+        if (!authToken) {
+          console.error('Authentication token not found. Please log in.');
+        }
+
         const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users`, {
-          method: 'POST',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
           },
           body: JSON.stringify({
             "walletAddress": address,
-            "username": formData.username
+            "fullName": formData.name,
+            "username": formData.username,
+            "email": formData.email,
+            "bio": formData.bio
           })
         });
 
@@ -111,7 +121,7 @@ export default function Register() {
         const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
         
         if (!authToken) {
-          return { success: false, error: 'Authentication token not found. Please log in.' };
+          console.error('Authentication token not found. Please log in.');
         }
 
         // Create FormData and append the file
