@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 
 import Pin from '../assets/pin.png';
+import Footer from '../components/Footer';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -289,6 +290,7 @@ export default function Profile() {
           sx={{
             borderRadius: 4,
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            marginBottom: '70px'
           }}
         >
           <CardContent sx={{ p: 3 }}>
@@ -344,6 +346,7 @@ export default function Profile() {
           </CardContent>
         </Card>
       </Container>
+      <Footer />
     </Box>
   );
 }
