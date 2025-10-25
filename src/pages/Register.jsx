@@ -19,6 +19,7 @@ import {
   MoreVert,
   Edit as EditIcon
 } from '@mui/icons-material';
+import { useAccount } from 'wagmi';
 
 const countries = [
   { value: 'ar', label: 'Argentina' },
@@ -28,6 +29,8 @@ const countries = [
 ];
 
 export default function Register() {
+  const { address } = useAccount();
+
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: '',
@@ -58,8 +61,32 @@ export default function Register() {
     }
   };
 
-  const handleContinue = () => {
-    if (step < 3) {
+  const handleContinue = async () => {
+    if (step === 1) {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            "walletAddress": address,
+            "username": formData.username
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.message || 'Failed to create user');
+        }
+        console.log('User created:', data.user);
+        setStep(step + 1);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+    else if (step < 3) {
       setStep(step + 1);
     }
   };
