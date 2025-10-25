@@ -9,8 +9,7 @@ import {
   Card,
   CardContent,
   Container,
-  Paper,
-  Chip,
+  Grid,
 } from '@mui/material';
 import {
   ArrowBack,
@@ -22,6 +21,8 @@ import {
   Edit,
   AddCircleOutlineOutlined
 } from '@mui/icons-material';
+
+import Pin from '../assets/pin.png';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -148,45 +149,68 @@ export default function Profile() {
         <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, px: 1 }}>
           Tus pines
         </Typography>
-        <Card
-          sx={{
-            borderRadius: 4,
-            mb: 3,
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            py: 4,
-          }}
-        >
-          <Box
-            sx={{
-              width: 100,
-              height: 100,
-              bgcolor: '#e0e0e0',
-              borderRadius: '50%',
-              mb: 3,
-            }}
-          />
-          <Button
-            onClick={() => navigate("/addpin")}
-            variant="contained"
-            size="large"
-            sx={{
-              borderRadius: 10,
-              px: 5,
-              py: 1.5,
-              textTransform: 'none',
-              fontSize: '1.1rem',
-              bgcolor: '#1e90ff',
-              '&:hover': {
-                bgcolor: '#1c7ed6',
-              },
-            }}
-          >
-            Activar
-          </Button>
-        </Card>
+        <Grid container spacing={2}>
+          {profileData?.nfcId ? (
+            <Grid item size={6}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  mb: 3,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  py: 1,
+                }}
+              >
+                <IconButton aria-label="delete" size="large" style={{ float: "right" }}>
+                  <AddCircleOutlineOutlined />
+                </IconButton>
+
+                <img className="mx-auto w-[150px]" src={Pin} alt="Pin" />
+              </Card>
+            </Grid>
+          ) : (
+            <Grid item size={6}>
+              <Card
+                sx={{
+                  borderRadius: 4,
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  py: 4,
+                  height: '100%',
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    bgcolor: '#e0e0e0',
+                    borderRadius: '50%',
+                    mb: 3,
+                  }}
+                />
+                <Button
+                  onClick={() => navigate("/addpin")}
+                  variant="contained"
+                  size="large"
+                  sx={{
+                    borderRadius: 10,
+                    px: 5,
+                    py: 1.5,
+                    textTransform: 'none',
+                    fontSize: '1.1rem',
+                    bgcolor: '#1e90ff',
+                    '&:hover': {
+                      bgcolor: '#1c7ed6',
+                    },
+                  }}
+                >
+                  Activar
+                </Button>
+              </Card>
+            </Grid>
+          )}
+        </Grid>
 
         {/* Buscar pines */}
         <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, px: 1 }}>
