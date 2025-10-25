@@ -1,149 +1,256 @@
-import { useState } from 'react';
-import { AlertCircle, CheckCircle2, Loader2 } from 'lucide-react';
-import { useAccount } from 'wagmi';
+import React, { useState } from 'react';
+import {
+  Box,
+  TextField,
+  Button,
+  Typography,
+  Avatar,
+  IconButton,
+  MenuItem,
+  LinearProgress,
+  Paper,
+  Container
+} from '@mui/material';
+import {
+  SignalCellularAlt,
+  Wifi,
+  BatteryFull,
+  ArrowBack,
+  MoreVert,
+  Edit as EditIcon
+} from '@mui/icons-material';
+
+const countries = [
+  { value: 'ar', label: 'Argentina' },
+  { value: 'mx', label: 'México' },
+  { value: 'es', label: 'España' },
+  { value: 'us', label: 'United States' }
+];
 
 export default function Register() {
-  const { address } = useAccount();
-
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
-    username: ''
+    name: '',
+    country: 'ar',
+    email: '',
+    username: '',
+    bio: '',
+    photo: null,
+    photoPreview: null
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-    setError('');
+  const handleChange = (field) => (event) => {
+    setFormData({ ...formData, [field]: event.target.value });
   };
 
-  const handleSubmit = async () => {
-    // Basic validation
-    if (!formData.username.trim()) {
-      setError('Please fill in all fields');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setSuccess(false);
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          "walletAddress": address,
-          "username": formData.username
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to create user');
-      }
-
-      setSuccess(true);
-      setFormData({ username: '' });
-      
-      // Optional: Redirect or perform other actions after successful registration
-      console.log('User created:', data.user);
-    } catch (err) {
-      console.error(err);
-      setError(err.message || 'An error occurred during registration');
-    } finally {
-      setLoading(false);
+  const handlePhotoUpload = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({
+          ...formData,
+          photo: file,
+          photoPreview: reader.result
+        });
+      };
+      reader.readAsDataURL(file);
     }
   };
 
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
+  const handleContinue = () => {
+    if (step < 3) {
+      setStep(step + 1);
     }
   };
+
+  const handleSave = () => {
+    console.log('Form submitted:', formData);
+    alert('¡Registro completado con éxito!');
+  };
+
+  const progress = (step / 3) * 100;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Account</h1>
-            <p className="text-gray-600">Register to get started</p>
-          </div>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5', py: 2 }}>
+      <Container maxWidth="sm">
+        <Paper elevation={3} sx={{ borderRadius: 4, overflow: 'hidden' }}>
+          {/* Progress Bar */}
+          <LinearProgress variant="determinate" value={progress} sx={{ height: 3 }} />
 
-          <div className="space-y-6">
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-2">
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                name="username"
-                value={formData.username}
-                onChange={handleChange}
-                onKeyPress={handleKeyPress}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition"
-                placeholder="Enter your username"
-                disabled={loading}
-              />
-            </div>
+          {/* Content */}
+          <Box sx={{ p: 3, minHeight: 500 }}>
+            {step === 1 && (
+              <Box>
+                <Typography variant="h5" fontWeight="600" mb={0.5}>
+                  Crear cuenta
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={3}>
+                  Contanos un poco sobre vos
+                </Typography>
 
-            <div>
-              <label htmlFor="walletAddress" className="block text-sm font-medium text-gray-700 mb-2">
-                Wallet Address
-              </label>
-              <p>{address}</p>
-            </div>
+                <TextField
+                  fullWidth
+                  label="Tu nombre"
+                  value={formData.name}
+                  onChange={handleChange('name')}
+                  margin="normal"
+                  variant="outlined"
+                />
 
-            {error && (
-              <div className="flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-red-800">{error}</p>
-              </div>
+                <TextField
+                  fullWidth
+                  label="Tu email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange('email')}
+                  margin="normal"
+                  variant="outlined"
+                />
+
+                <TextField
+                  fullWidth
+                  label="@username"
+                  value={formData.username}
+                  onChange={handleChange('username')}
+                  margin="normal"
+                  variant="outlined"
+                  helperText="Escribe un username para identificar a tu cuenta"
+                />
+
+                <TextField
+                  fullWidth
+                  label="Bio"
+                  multiline
+                  rows={3}
+                  value={formData.bio}
+                  onChange={handleChange('bio')}
+                  margin="normal"
+                  variant="outlined"
+                  helperText={`${formData.bio.length}/160 caracteres`}
+                  inputProps={{ maxLength: 160 }}
+                />
+              </Box>
             )}
 
-            {success && (
-              <div className="flex items-start gap-3 p-4 bg-green-50 border border-green-200 rounded-lg">
-                <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-green-800">Account created successfully!</p>
-              </div>
+            {step === 2 && (
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="h5" fontWeight="600" mb={0.5}>
+                  Elegí una foto
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={4}>
+                  Selecciona una imagen
+                </Typography>
+
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                  <Box sx={{ position: 'relative' }}>
+                    <Avatar
+                      sx={{
+                        width: 150,
+                        height: 150,
+                        bgcolor: '#e3f2fd',
+                        fontSize: 48,
+                        fontWeight: 600,
+                        color: 'black'
+                      }}
+                      src={formData.photoPreview}
+                    >
+                      {!formData.photoPreview && 'A'}
+                    </Avatar>
+                  </Box>
+                </Box>
+
+                <Typography variant="h6" fontWeight="500" mb={1}>
+                  Argentina
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={3}>
+                  Sube imágenes de hasta 5MB
+                </Typography>
+                <Typography variant="caption" color="text.secondary" display="block" mb={3}>
+                  Tu foto se va a mostrar cuando interactúes.
+                </Typography>
+
+                <input
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  id="photo-upload"
+                  type="file"
+                  onChange={handlePhotoUpload}
+                />
+                <label htmlFor="photo-upload">
+                  <Button variant="text" component="span" sx={{ textTransform: 'none' }}>
+                    Seleccionar imagen
+                  </Button>
+                </label>
+              </Box>
             )}
 
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={loading}
-              className="w-full bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition flex items-center justify-center gap-2"
+            {step === 3 && (
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography variant="h5" fontWeight="600" mb={4} sx={{ textAlign: 'right' }}>
+                  Bienvenida!
+                </Typography>
+
+                <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}>
+                  <Box sx={{ position: 'relative' }}>
+                    <Avatar
+                      sx={{
+                        width: 150,
+                        height: 150,
+                        bgcolor: '#333'
+                      }}
+                      src={formData.photoPreview}
+                    >
+                      {!formData.photoPreview && formData.name.charAt(0).toUpperCase()}
+                    </Avatar>
+                    <IconButton
+                      sx={{
+                        position: 'absolute',
+                        top: 0,
+                        right: 0,
+                        bgcolor: 'white',
+                        boxShadow: 2,
+                        '&:hover': { bgcolor: 'white' }
+                      }}
+                      size="small"
+                    >
+                      <EditIcon fontSize="small" />
+                    </IconButton>
+                  </Box>
+                </Box>
+
+                <Typography variant="h6" fontWeight="500" mb={1}>
+                  {formData.country === 'ar' ? 'Argentina' : countries.find(c => c.value === formData.country)?.label}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" mb={2}>
+                  Tu imagen ha sido subida con éxito
+                </Typography>
+                <Typography variant="caption" color="text.secondary" display="block">
+                  Tu imagen se guardó en tu perfil, podés modificarla desde los ajustes del perfil.
+                </Typography>
+              </Box>
+            )}
+          </Box>
+
+          {/* Bottom Button */}
+          <Box sx={{ p: 2, bgcolor: 'white' }}>
+            <Button
+              fullWidth
+              variant="contained"
+              size="large"
+              onClick={step === 3 ? handleSave : handleContinue}
+              sx={{
+                textTransform: 'none',
+                borderRadius: 2,
+                py: 1.5,
+                fontSize: 16
+              }}
             >
-              {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Creating Account...
-                </>
-              ) : (
-                'Create Account'
-              )}
-            </button>
-          </div>
-
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Already have an account?{' '}
-              <a href="#" className="text-indigo-600 hover:text-indigo-700 font-medium">
-                Sign in
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+              {step === 3 ? 'Guardar' : 'Continuar'}
+            </Button>
+          </Box>
+        </Paper>
+      </Container>
+    </Box>
   );
 }
