@@ -339,7 +339,7 @@ export default function Profile() {
                   <WhatsApp />
                 </IconButton>
               </Box>
-              <IconButton>
+              <IconButton onClick={() => navigate("/sociallinks")}>
                 <Edit />
               </IconButton>
             </Box>
