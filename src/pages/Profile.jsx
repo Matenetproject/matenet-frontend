@@ -1,180 +1,282 @@
-import { useState, useEffect } from 'react';
-import { User, Wallet, AlertCircle, Loader2, RefreshCw } from 'lucide-react';
+import React, { useState } from 'react';
+import {
+  Box,
+  Avatar,
+  Typography,
+  IconButton,
+  Button,
+  Card,
+  CardContent,
+  Container,
+  Paper,
+  Chip,
+} from '@mui/material';
+import {
+  ArrowBack,
+  Settings,
+  Instagram,
+  Facebook,
+  LinkedIn,
+  WhatsApp,
+  Edit,
+  AddCircleOutlineOutlined
+} from '@mui/icons-material';
 
 export default function Profile() {
-  const [profile, setProfile] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-
-  const fetchProfile = async () => {
-    setLoading(true);
-    setError('');
-
-    try {
-      const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users/profile`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch profile');
-      }
-
-      setProfile(data.user);
-    } catch (err) {
-      setError(err.message || 'An error occurred while fetching profile');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
-
-  const handleRefresh = () => {
-    fetchProfile();
-  };
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
-        <div className="text-center">
-          <Loader2 className="w-12 h-12 text-indigo-600 animate-spin mx-auto mb-4" />
-          <p className="text-gray-600">Loading profile...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-        <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-          <div className="text-center">
-            <AlertCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Error</h2>
-            <p className="text-gray-600 mb-6">{error}</p>
-            <button
-              onClick={handleRefresh}
-              className="bg-indigo-600 text-white py-2 px-6 rounded-lg font-medium hover:bg-indigo-700 transition"
-            >
-              Try Again
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const [pins] = useState(0);
+  const [nearby] = useState(4);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-      <div className="max-w-3xl mx-auto pt-8">
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          {/* Header Section */}
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-12 text-center relative">
-            <div className="absolute top-4 right-4">
-              <button
-                onClick={handleRefresh}
-                className="p-2 bg-white bg-opacity-20 hover:bg-opacity-30 rounded-lg transition"
-                title="Refresh profile"
+    <Box sx={{ minHeight: '100vh', bgcolor: '#e8f4f8' }}>
+      {/* Header */}
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          p: 2,
+          bgcolor: '#e8f4f8',
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton>
+            <ArrowBack />
+          </IconButton>
+          <Typography variant="h5" fontWeight="bold">
+            Profile
+          </Typography>
+        </Box>
+        <Typography variant="h6" fontWeight="500">
+          {pins} P
+        </Typography>
+      </Box>
+
+      <Container maxWidth="sm" sx={{ pb: 4 }}>
+        {/* Profile Card */}
+        <Card
+          sx={{
+            borderRadius: 4,
+            mb: 3,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-end', mb: 2 }}>
+              <IconButton>
+                <Settings />
+              </IconButton>
+            </Box>
+
+            <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3, mb: 3 }}>
+              <Avatar
+                sx={{
+                  width: 120,
+                  height: 120,
+                  border: '3px solid #fff',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                }}
+                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400"
+                alt="Profile"
+              />
+              <Box sx={{ flex: 1 }}>
+                <Typography variant="h6" fontWeight="500" gutterBottom>
+                  @eterea
+                </Typography>
+                <Typography variant="h5" fontWeight="bold" gutterBottom>
+                  Argentina Demar
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  miemail@gmail.com
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Bio
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                Soy Lettering Artist y Product Designer, amo el surf y la buena música.
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+
+        {/* Tus pines */}
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, px: 1 }}>
+          Tus pines
+        </Typography>
+        <Card
+          sx={{
+            borderRadius: 4,
+            mb: 3,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            py: 4,
+          }}
+        >
+          <Box
+            sx={{
+              width: 100,
+              height: 100,
+              bgcolor: '#e0e0e0',
+              borderRadius: '50%',
+              mb: 3,
+            }}
+          />
+          <Button
+            variant="contained"
+            size="large"
+            sx={{
+              borderRadius: 10,
+              px: 5,
+              py: 1.5,
+              textTransform: 'none',
+              fontSize: '1.1rem',
+              bgcolor: '#1e90ff',
+              '&:hover': {
+                bgcolor: '#1c7ed6',
+              },
+            }}
+          >
+            Activar
+          </Button>
+        </Card>
+
+        {/* Buscar pines */}
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, px: 1 }}>
+          Buscar pines
+        </Typography>
+        <Card
+          sx={{
+            borderRadius: 4,
+            mb: 3,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    bgcolor: '#4caf50',
+                    borderRadius: '50%',
+                    clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)',
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    bgcolor: '#2196f3',
+                    borderRadius: '10%',
+                  }}
+                />
+                <Box
+                  sx={{
+                    width: 40,
+                    height: 40,
+                    bgcolor: '#f44336',
+                    borderRadius: '50%',
+                  }}
+                />
+              </Box>
+              <Typography variant="h6" fontWeight="bold">
+                {nearby} cerca
+              </Typography>
+              <Button
+                variant="contained"
+                sx={{
+                  borderRadius: 10,
+                  px: 4,
+                  py: 1,
+                  textTransform: 'none',
+                  fontSize: '1rem',
+                  bgcolor: '#1e90ff',
+                  '&:hover': {
+                    bgcolor: '#1c7ed6',
+                  },
+                }}
               >
-                <RefreshCw className="w-5 h-5 text-white" />
-              </button>
-            </div>
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <User className="w-12 h-12 text-indigo-600" />
-            </div>
-            <h1 className="text-3xl font-bold text-white mb-2">
-              {profile?.username || 'User Profile'}
-            </h1>
-            <p className="text-indigo-100">Member Profile</p>
-          </div>
+                Buscar
+              </Button>
+            </Box>
+          </CardContent>
+        </Card>
 
-          {/* Profile Information */}
-          <div className="p-8 space-y-6">
-            <div>
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Profile Information</h2>
-              
-              <div className="space-y-4">
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <User className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-500 mb-1">Username</p>
-                      <p className="text-lg text-gray-900 break-words">
-                        {profile?.username || 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-gray-50 rounded-lg p-4">
-                  <div className="flex items-start gap-3">
-                    <Wallet className="w-5 h-5 text-gray-600 mt-1 flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-500 mb-1">Wallet Address</p>
-                      <p className="text-lg text-gray-900 font-mono break-all">
-                        {profile?.walletAddress || 'N/A'}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                {profile?._id && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 flex items-center justify-center text-gray-600 mt-1 flex-shrink-0">
-                        <span className="text-sm font-bold">#</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-500 mb-1">User ID</p>
-                        <p className="text-sm text-gray-700 font-mono break-all">
-                          {profile._id}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {profile?.createdAt && (
-                  <div className="bg-gray-50 rounded-lg p-4">
-                    <div className="flex items-start gap-3">
-                      <div className="w-5 h-5 flex items-center justify-center text-gray-600 mt-1 flex-shrink-0">
-                        <span className="text-sm">📅</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-gray-500 mb-1">Member Since</p>
-                        <p className="text-lg text-gray-900">
-                          {new Date(profile.createdAt).toLocaleDateString('en-US', {
-                            year: 'numeric',
-                            month: 'long',
-                            day: 'numeric'
-                          })}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button className="flex-1 bg-indigo-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-indigo-700 transition">
-                Edit Profile
-              </button>
-              <button className="flex-1 bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition">
-                Settings
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+        {/* Links */}
+        <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, px: 1 }}>
+          Links
+        </Typography>
+        <Card
+          sx={{
+            borderRadius: 4,
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          }}
+        >
+          <CardContent sx={{ p: 3 }}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <IconButton
+                  sx={{
+                    bgcolor: '#0095f6',
+                    color: 'white',
+                    '&:hover': { bgcolor: '#0081d6' },
+                  }}
+                >
+                  <Instagram />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    bgcolor: '#1877f2',
+                    color: 'white',
+                    '&:hover': { bgcolor: '#1664d9' },
+                  }}
+                >
+                  <Facebook />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    bgcolor: '#0a66c2',
+                    color: 'white',
+                    '&:hover': { bgcolor: '#0956a8' },
+                  }}
+                >
+                  <LinkedIn />
+                </IconButton>
+                <IconButton
+                  sx={{
+                    bgcolor: '#25d366',
+                    color: 'white',
+                    '&:hover': { bgcolor: '#20ba5a' },
+                  }}
+                >
+                  <WhatsApp />
+                </IconButton>
+              </Box>
+              <IconButton>
+                <Edit />
+              </IconButton>
+            </Box>
+          </CardContent>
+        </Card>
+      </Container>
+    </Box>
   );
 }
