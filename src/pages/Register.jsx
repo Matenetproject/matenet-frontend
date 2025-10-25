@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -32,6 +32,44 @@ const countries = [
 export default function Register() {
   const navigate = useNavigate();
   const { address } = useAccount();
+
+  useEffect(() => {
+    getUserProfile();
+  }, [])
+  
+  async function getUserProfile() {
+    try {
+      // Get token from parameter or localStorage
+      const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
+      
+      if (!authToken) {
+        console.error('Authentication token not found. Please log in.');
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users/profile`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle specific status codes
+        if (response.status === 404) {
+          throw new Error('User not found');
+        }
+        throw new Error(data.error || data.message || 'Failed to fetch user profile');
+      }
+
+      console.log(data.user);
+      if (data?.user?.username) navigate("/profile");
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({

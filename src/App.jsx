@@ -17,8 +17,8 @@ export default function App() {
           path="/register"
           element={<Register />} />
         <Route
-          path="/login"
-          element={<Login />} />
+          path="/test"
+          element={<Home />} />
         <Route
           path="/profile"
           element={<Profile />} />
@@ -30,7 +30,7 @@ export default function App() {
           element={<QRCodeReader />} />
         <Route
           path="/"
-          element={<Home />} />
+          element={<Login />} />
       </Routes>
     </HashRouter>
   );

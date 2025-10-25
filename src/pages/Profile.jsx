@@ -119,13 +119,13 @@ export default function Profile() {
               />
               <Box sx={{ flex: 1 }}>
                 <Typography variant="h6" fontWeight="500" gutterBottom>
-                  @{profileData.username}
+                  @{profileData?.username}
                 </Typography>
                 <Typography variant="h5" fontWeight="bold" gutterBottom>
-                  {profileData.fullName}
+                  {profileData?.fullName}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                  {profileData.email}
+                  {profileData?.email}
                 </Typography>
               </Box>
             </Box>
@@ -135,7 +135,7 @@ export default function Profile() {
                 Bio
               </Typography>
               <Typography variant="body1" color="text.secondary">
-                {profileData.bio}
+                {profileData?.bio}
               </Typography>
             </Box>
           </CardContent>

@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Wallet, AlertCircle, CheckCircle2, Loader2, Shield } from 'lucide-react';
 import { SiweMessage } from 'siwe';
+import {
+  Box,
+  Container,
+} from '@mui/material';
+
+import HomeLogo from '../assets/homelogo.png';
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [account, setAccount] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [hasMetaMask, setHasMetaMask] = useState(false);
+
+  useEffect(() => {
+    if(localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken')) navigate("/register");
+  }, [])
+  
 
   useEffect(() => {
     // Check if MetaMask is installed
@@ -120,9 +134,7 @@ export default function Login() {
       if (result.success) {
         localStorage.setItem('siwe_jwt', result.token);
         setSuccess('Authentication successful! Redirecting...');
-        setTimeout(() => {
-          window.location.href = '/profile';
-        }, 1500);
+        navigate("/register");
       } else {
         throw new Error(result.error || 'Authentication failed');
       }
@@ -139,16 +151,20 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-xl p-8">
+    <Box sx={{ minHeight: '100vh', bgcolor: '#FFFFFF' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          p: 2,
+          bgcolor: '#FFFFFF',
+        }}
+      >
+        <Container maxWidth="sm" sx={{ pb: 4 }}>
           {/* Header */}
           <div className="text-center mb-8">
-            <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
-              <Shield className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
-            <p className="text-gray-600">Sign in with Ethereum to continue</p>
+            <img className="mx-auto mt-[100px] mb-[100px]" src={HomeLogo} alt="home logo" />
           </div>
 
           {/* MetaMask Check */}
@@ -175,18 +191,6 @@ export default function Login() {
             </div>
           )}
 
-          {/* Connected Account Display */}
-          {account && (
-            <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
-                <div className="flex-1">
-                  <p className="text-sm text-green-800 font-medium mb-1">Wallet Connected</p>
-                  <p className="text-sm text-green-700 font-mono">{truncateAddress(account)}</p>
-                </div>
-              </div>
-            </div>
-          )}
 
           {/* Error Message */}
           {error && (
@@ -243,45 +247,16 @@ export default function Login() {
                   ) : (
                     <>
                       <Shield className="w-5 h-5" />
-                      Sign In with Ethereum
+                      Connect Wallet
                     </>
                   )}
-                </button>
-                
-                <button
-                  onClick={connectWallet}
-                  disabled={loading}
-                  className="w-full bg-gray-100 text-gray-700 py-3 px-4 rounded-lg font-medium hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Change Wallet
                 </button>
               </>
             )}
           </div>
 
-          {/* Info Box */}
-          <div className="mt-8 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <p className="text-sm text-blue-800">
-              <strong>New to Web3?</strong> This app uses Sign-In with Ethereum (SIWE) for secure authentication. Your account will be created automatically on first sign-in.
-            </p>
-          </div>
-
-          {/* Footer */}
-          <div className="mt-6 text-center">
-            <p className="text-sm text-gray-600">
-              Don't have a wallet?{' '}
-              <a 
-                href="https://metamask.io/download/" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-indigo-600 hover:text-indigo-700 font-medium"
-              >
-                Get MetaMask
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+        </Container>
+      </Box>
+    </Box>
   );
 }
