@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   TextField,
@@ -29,6 +30,7 @@ const countries = [
 ];
 
 export default function Register() {
+  const navigate = useNavigate();
   const { address } = useAccount();
 
   const [step, setStep] = useState(1);
@@ -86,6 +88,59 @@ export default function Register() {
         console.error(err);
       }
     }
+    else if (step === 2) {
+      try {
+        // Validate file
+        if (!formData.photo) {
+           console.error('No file provided');
+        }
+
+        // Validate file type (optional but recommended)
+        const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(formData.photo.type)) {
+          console.error('Invalid file type. Please upload an image (JPEG, PNG, GIF, or WebP)');
+        }
+
+        // Validate file size (optional, e.g., max 5MB)
+        const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+        if (formData.photo.size > maxSize) {
+          console.error('File size too large. Maximum size is 5MB');
+        }
+
+        // Get token from parameter or localStorage
+        const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
+        
+        if (!authToken) {
+          return { success: false, error: 'Authentication token not found. Please log in.' };
+        }
+
+        // Create FormData and append the file
+        const uploadPhoto = new FormData();
+        uploadPhoto.append('file', formData.photo);
+
+        // Make the API call
+        const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/users/profile-picture`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+            // Note: Do NOT set Content-Type header when sending FormData
+            // The browser will set it automatically with the correct boundary
+          },
+          body: uploadPhoto
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || data.message || 'Failed to upload profile picture');
+        }
+
+        console.log("success", data.profilePictureUrl);
+        setStep(step + 1);
+      } catch (error) {
+        console.error(error);
+      }
+    }
     else if (step < 3) {
       setStep(step + 1);
     }
@@ -93,7 +148,7 @@ export default function Register() {
 
   const handleSave = () => {
     console.log('Form submitted:', formData);
-    alert('¡Registro completado con éxito!');
+    navigate("/profile");
   };
 
   const progress = (step / 3) * 100;
