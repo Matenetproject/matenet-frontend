@@ -24,6 +24,7 @@ import {
 
 import Pin from '../assets/pin.png';
 import Footer from '../components/Footer';
+import FriendRequests from '../components/FriendRequests';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -31,9 +32,11 @@ export default function Profile() {
   const [pins] = useState(0);
   const [nearby] = useState(4);
   const [profileData, setProfileData] = useState(null);
+  const [friendRequests, setFriendRequests] = useState([]);
 
   useEffect(() => {
     getUserProfile();
+    getFriendRequests();
   }, [])
   
   async function getUserProfile() {
@@ -65,6 +68,40 @@ export default function Profile() {
 
       console.log(data.user);
       setProfileData(data.user);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  async function getFriendRequests() {
+    try {
+      // Get token from parameter or localStorage
+      const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
+      
+      if (!authToken) {
+        console.error('Authentication token not found. Please log in.');
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/friends/requests`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Handle specific status codes
+        if (response.status === 404) {
+          throw new Error('User not found');
+        }
+        throw new Error(data.error || data.message || 'Failed to fetch friend requests');
+      }
+
+      console.log(data.requests);
+      setFriendRequests(data.requests);
     } catch (error) {
       console.error(error);
     }
@@ -346,6 +383,12 @@ export default function Profile() {
             </Box>
           </CardContent>
         </Card>
+
+        <Typography variant="h6" fontWeight="bold" sx={{ px: 1 }}>
+          Solicitudes de amistad
+        </Typography>
+        <FriendRequests friendRequests={friendRequests} />
+
       </Container>
       <Footer />
     </Box>
