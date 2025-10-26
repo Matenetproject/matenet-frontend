@@ -12,9 +12,37 @@ import {
 } from '@mui/material';
 import { Add } from '@mui/icons-material';
 
-export default function FriendRequests({ friendRequests }) {
-  const handleView = (userId) => {
-    console.log('View user:', userId);
+export default function FriendRequests({ friendRequests, getFriendRequests }) {
+  const handleAccept = async (senderId) => {
+    console.log('View user:', senderId);
+     try {
+      const authToken = localStorage.getItem('siwe_jwt') || localStorage.getItem('authToken');
+      
+      if (!authToken) {
+        console.error('Authentication token not found. Please log in.');
+      }
+
+      const response = await fetch(`${import.meta.env.VITE_SERVERURL}/api/friends/accept`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`
+        },
+        body: JSON.stringify({
+          "senderId": senderId
+        })
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to accept friends');
+      }
+      console.log('Accepted:', data);
+      await getFriendRequests();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -45,7 +73,7 @@ export default function FriendRequests({ friendRequests }) {
                 <IconButton 
                   edge="end" 
                   aria-label="view"
-                  onClick={() => handleView(user.senderId)}
+                  onClick={() => handleAccept(user.senderId)}
                   sx={{
                     '&:hover': {
                       bgcolor: 'rgba(30, 144, 255, 0.1)',

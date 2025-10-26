@@ -387,7 +387,7 @@ export default function Profile() {
         <Typography variant="h6" fontWeight="bold" sx={{ px: 1 }}>
           Solicitudes de amistad
         </Typography>
-        <FriendRequests friendRequests={friendRequests} />
+        <FriendRequests friendRequests={friendRequests} getFriendRequests={getFriendRequests} />
 
       </Container>
       <Footer />
