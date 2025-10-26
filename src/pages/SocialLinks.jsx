@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   AppBar,
@@ -31,6 +32,8 @@ import {
 import Footer from '../components/Footer';
 
 export default function SocialLinks() {
+  const navigate = useNavigate();
+
   const [links, setLinks] = useState([
     { id: 1, name: 'Instagram', handle: '', icon: Instagram, enabled: false },
     { id: 2, name: 'Facebook', handle: '', icon: Facebook, enabled: false },
@@ -82,7 +85,7 @@ export default function SocialLinks() {
     <Box sx={{ bgcolor: '#f5f5f5', minHeight: '100vh' }}>
       <AppBar position="static" sx={{ bgcolor: 'white', color: 'black', boxShadow: 'none', borderBottom: '1px solid #e0e0e0' }}>
         <Toolbar>
-          <IconButton edge="start" sx={{ mr: 2 }}>
+          <IconButton edge="start" sx={{ mr: 2 }} onClick={() => navigate("/profile")}>
             <ArrowBack />
           </IconButton>
           <Typography variant="h6" sx={{ flexGrow: 1, fontWeight: 500 }}>

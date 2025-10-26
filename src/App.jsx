@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import Login from './pages/Login';
 import AddPin from './pages/AddPin';
 import SocialLinks from './pages/SocialLinks';
+import AddFriend from './pages/AddFriend';
 
 export default function App() {
 
@@ -15,6 +16,9 @@ export default function App() {
     <HashRouter>
       <appkit-button />
       <Routes>
+        <Route
+          path="/addfriend"
+          element={<AddFriend />} />
         <Route
           path="/sociallinks"
           element={<SocialLinks />} />

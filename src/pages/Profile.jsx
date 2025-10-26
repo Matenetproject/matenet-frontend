@@ -263,6 +263,7 @@ export default function Profile() {
                 {nearby} cerca
               </Typography>
               <Button
+                onClick={() => navigate("/addfriend")}
                 variant="contained"
                 sx={{
                   borderRadius: 10,
