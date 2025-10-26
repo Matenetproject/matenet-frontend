@@ -65,7 +65,7 @@ export default function Register() {
       }
 
       console.log(data.user);
-      if (data?.user?.username) navigate("/profile");
+      if (data?.user?.username) navigate("/home");
     } catch (error) {
       console.error(error);
     }
@@ -196,7 +196,7 @@ export default function Register() {
 
   const handleSave = () => {
     console.log('Form submitted:', formData);
-    navigate("/profile");
+    navigate("/home");
   };
 
   const progress = (step / 3) * 100;

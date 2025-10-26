@@ -29,7 +29,7 @@ export default function App() {
           path="/register"
           element={<Register />} />
         <Route
-          path="/test"
+          path="/home"
           element={<Home />} />
         <Route
           path="/profile"

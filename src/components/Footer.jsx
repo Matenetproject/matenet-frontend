@@ -1,8 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, BottomNavigation, BottomNavigationAction } from '@mui/material';
 import { Home, Person, PushPin, EmojiEvents } from '@mui/icons-material';
 
 export default function Footer() {
+  const navigate = useNavigate();
+
   const [value, setValue] = React.useState(1); // 1 = Profile is active
 
   return (
@@ -40,10 +43,12 @@ export default function Footer() {
         }}
       >
         <BottomNavigationAction
+          onClick={() => navigate("/home")}
           label="Home"
           icon={<Home sx={{ fontSize: 28 }} />}
         />
         <BottomNavigationAction
+          onClick={() => navigate("/profile")}
           label="Profile"
           icon={<Person sx={{ fontSize: 28 }} />}
         />
