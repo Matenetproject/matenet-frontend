@@ -23,6 +23,7 @@ import {
 } from '@mui/icons-material';
 
 import Footer from '../components/Footer';
+import FriendList from '../components/FriendList';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -154,6 +155,8 @@ export default function Home() {
             <WhatsApp />
           </IconButton>
         </Box>
+        
+        <FriendList friendIds={profileData?.friends} />
       </Container>
       <Footer />
     </Box>

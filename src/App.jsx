@@ -14,7 +14,7 @@ export default function App() {
 
   return (
     <HashRouter>
-      <appkit-button />
+      {/* <appkit-button /> */}
       <Routes>
         <Route
           path="/addfriend"
